@@ -1,3 +1,4 @@
+
 import { isForeignKeyViolation } from "../../src/database/foreign-key-violation";
 
 describe("isForeignKeyViolation", () => {
@@ -12,6 +13,8 @@ describe("isForeignKeyViolation", () => {
     ["o número 23503", 23503],
     ["um objeto vazio", {}],
     ['um objeto com code "outro"', { code: "outro" }],
+    ["um objeto com code null", { code: null }],
+    ["um objeto com code numérico 23503", { code: 23503 }],
   ])("retorna false para %s", (_label, value) => {
     expect(isForeignKeyViolation(value)).toBe(false);
   });

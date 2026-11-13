@@ -1,3 +1,4 @@
+
 import { HttpError } from "../src/errors";
 import {
   parseId,
@@ -44,6 +45,7 @@ describe("parseId", () => {
   test.each([
     ["1", 1],
     ["2147483647", 2147483647],
+    ["0007", 7],
   ])('converte a string "%s" para o número %d', (value, expected) => {
     expect(parseId(value, "RA")).toBe(expected);
   });
@@ -66,6 +68,7 @@ describe("validateName", () => {
   test.each([
     ['"Ana"', "Ana"],
     ["uma string com 100 letras a", "a".repeat(100)],
+    ["um nome válido com espaços nas extremidades", " Ana "],
   ])("retorna o nome recebido para %s", (_label, value) => {
     expect(validateName(value)).toBe(value);
   });
@@ -112,5 +115,14 @@ describe("validateBody", () => {
 
     expect(result).toBe(body);
     expect(result).toEqual({ name: "Ana", extra: true });
+  });
+
+  test("preserva a referência de objetos aninhados", () => {
+    const address = { city: "Jacareí" };
+    const body = { name: "Ana", address };
+
+    const result = validateBody(body);
+
+    expect(result.address).toBe(address);
   });
 });

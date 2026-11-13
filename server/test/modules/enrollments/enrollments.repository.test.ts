@@ -1,3 +1,4 @@
+
 import type { Database } from "../../../src/database/connection";
 import {
   PgEnrollmentRepository,
@@ -97,6 +98,19 @@ describe("PgEnrollmentRepository", () => {
         `SELECT ${columns} FROM enrollments WHERE student_ra = $1 AND course_id = $2`,
       );
       expect(params).toEqual([123, 7]);
+    });
+
+    test("retorna somente a primeira matrícula quando a consulta devolve várias linhas", async () => {
+      const rows: Enrollment[] = [
+        { studentRa: 123, courseId: 7, enrolledAt },
+        { studentRa: 456, courseId: 8, enrolledAt },
+      ];
+      query.mockResolvedValue({ rows });
+
+      const result = await repository.findOne(123, 7);
+
+      expect(result).toBe(rows[0]);
+      expect(result).not.toBe(rows[1]);
     });
 
     test("retorna undefined quando rows é vazio", async () => {

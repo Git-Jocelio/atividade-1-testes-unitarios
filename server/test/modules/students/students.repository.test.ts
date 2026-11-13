@@ -1,3 +1,4 @@
+
 import type { Database } from "../../../src/database/connection";
 import {
   PgStudentRepository,
@@ -90,6 +91,19 @@ describe("PgStudentRepository", () => {
         "SELECT ra, name FROM students WHERE ra = $1",
       );
       expect(params).toEqual([123]);
+    });
+
+    test("retorna somente a primeira linha quando a consulta devolve várias", async () => {
+      const rows: Student[] = [
+        { ra: 123, name: "Ana" },
+        { ra: 456, name: "Bruno" },
+      ];
+      query.mockResolvedValue({ rows });
+
+      const result = await repository.findOne(123);
+
+      expect(result).toBe(rows[0]);
+      expect(result).not.toBe(rows[1]);
     });
 
     test("retorna undefined quando rows é vazio", async () => {

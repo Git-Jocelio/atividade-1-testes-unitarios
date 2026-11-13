@@ -1,3 +1,4 @@
+
 import type { Database } from "../../../src/database/connection";
 import {
   PgCourseRepository,
@@ -90,6 +91,19 @@ describe("PgCourseRepository", () => {
         "SELECT id, name FROM courses WHERE id = $1",
       );
       expect(params).toEqual([7]);
+    });
+
+    test("retorna somente o primeiro curso quando a consulta devolve várias linhas", async () => {
+      const rows: Course[] = [
+        { id: 7, name: "Qualidade" },
+        { id: 8, name: "Testes" },
+      ];
+      query.mockResolvedValue({ rows });
+
+      const result = await repository.findOne(7);
+
+      expect(result).toBe(rows[0]);
+      expect(result).not.toBe(rows[1]);
     });
 
     test("retorna undefined quando rows é vazio", async () => {

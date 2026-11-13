@@ -1,3 +1,4 @@
+
 import { isUniqueViolation } from "../../src/database/unique-violation";
 
 describe("isUniqueViolation", () => {
@@ -12,6 +13,8 @@ describe("isUniqueViolation", () => {
     ["o número 23503", 23503],
     ["um objeto vazio", {}],
     ['um objeto com code "outro"', { code: "outro" }],
+    ["um objeto com code null", { code: null }],
+    ["um objeto com code numérico 23505", { code: 23505 }],
   ])("retorna false para %s", (_label, value) => {
     expect(isUniqueViolation(value)).toBe(false);
   });
